@@ -1,7 +1,7 @@
 """두 엑셀 파일을 사업자등록번호 기준으로 비교 (2026-09-29)
-A: 수임업체 세부내역 (시트 '세부내역', 5행 헤더)
-B: 기장의무 구분 목록 (Sheet1)
-사용: python compare.py A.xlsx B.xlsx 결과.xlsx
+이란영파일: 수임업체 세부내역 (시트 '세부내역', 5행 헤더)
+회계사님 파일: 기장의무 구분 목록 (Sheet1)
+사용: python compare.py 이란영파일.xlsx 회계사님파일.xlsx 결과.xlsx
 """
 import re, sys
 import pandas as pd
@@ -26,8 +26,8 @@ m = a.merge(b, on='k', suffixes=('_A', '_B'))
 rows = []
 for _, r in m.iterrows():
     def add(item, va, vb):
-        rows.append({'사업자등록번호': r['사업자등록번호_A'], '업체명(A)': r['업체명'],
-                     '항목': item, 'A 파일': va, 'B 파일': vb})
+        rows.append({'사업자등록번호': r['사업자등록번호_A'], '업체명': r['업체명'],
+                     '항목': item, '이란영파일': va, '회계사님 파일': vb})
     if t(r['대표자명_A']) != t(r['대표자명_B']):
         add('대표자명', r['대표자명_A'], r['대표자명_B'])
     if n(r['주민/법인 등록번호']) != n(r['주민(법인)번호']):
@@ -39,7 +39,7 @@ diff = pd.DataFrame(rows)
 
 with pd.ExcelWriter(out) as w:
     diff.to_excel(w, sheet_name='항목불일치', index=False)
-    a_only.to_excel(w, sheet_name='A에만있음(B누락)', index=False)
-    b_only.to_excel(w, sheet_name='B에만있음(A누락)', index=False)
-    b_nobrn.drop(columns='k').to_excel(w, sheet_name='B_사업자번호없음', index=False)
-print(f'공통 {len(m)} / 불일치 {len(diff)} / A만 {len(a_only)} / B만 {len(b_only)}')
+    a_only.to_excel(w, sheet_name='이란영파일에만있음', index=False)
+    b_only.to_excel(w, sheet_name='회계사님파일에만있음', index=False)
+    b_nobrn.drop(columns='k').to_excel(w, sheet_name='회계사님파일_사업자번호없음', index=False)
+print(f'공통 {len(m)} / 불일치 {len(diff)} / 이란영파일만 {len(a_only)} / 회계사님파일만 {len(b_only)}')
