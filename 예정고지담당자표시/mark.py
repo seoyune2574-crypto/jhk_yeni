@@ -51,3 +51,6 @@ def main(inform_path, target_path, out_path):
 
 if __name__ == '__main__':
     main(*sys.argv[1:4])
+
+# 결과물 보관: Google Drive '클로드' 폴더
+# https://drive.google.com/drive/folders/1qWzDPx_IfHt5zsWCEWE1jRyEqtsXonfe
